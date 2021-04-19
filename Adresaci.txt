@@ -15,4 +15,5 @@
 15|Agata|Wiœniewska|444 222 111|agata@wisniewska.pl|ul. Piêkna 7/8; 33-300 Krakow|
 16|Anna|Nowak|74892032|anowa@mail.com|Julianow 46|
 17|Felicja|Micek|84903945|fela.m@op.pl|Wroclaw, ul Zlota 37/4|
-
+18|Amanda|Kowalska|7583204947|amy.k@gmail.com|Rodlin, ul Maksi 6|
+19|Sandra|Smith|92793274|sandy.smith@wp.pl|Radlin, ul Okolna 11/2|

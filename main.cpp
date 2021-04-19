@@ -7,29 +7,29 @@
 
 using namespace std;
 
-struct DaneUzytkownika {
-    int ID;
+struct DaneAdresata {
+    int IDAdresat;
     string imie, nazwisko, telefon, mail, adres;
 };
 
-DaneUzytkownika KonwertujLinie (string linia);
-int DodajOsobe(int liczbaOsob, vector<DaneUzytkownika>& osoby, int ostatnieID);
-void WyszukajPoImieniu (const vector<DaneUzytkownika>& osoby, int liczbaOsob);
-void WyszukajPoNazwisku (const vector<DaneUzytkownika>& osoby, int liczbaOsob);
-void WyswietlWszystko (const vector<DaneUzytkownika>& osoby, int liczbaOsob);
-int UsunOsobe (int liczbaOsob, vector<DaneUzytkownika>& osoby);
-void EdytujRekordWedlugID (vector<DaneUzytkownika>& osoby, int liczbaOsob);
+DaneAdresata KonwertujLinie (string linia);
+int DodajOsobe(int liczbaOsob, vector<DaneAdresata>& osoby, int ostatnieIDAdresat);
+void WyszukajPoImieniu (const vector<DaneAdresata>& osoby, int liczbaOsob);
+void WyszukajPoNazwisku (const vector<DaneAdresata>& osoby, int liczbaOsob);
+void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob);
+int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby);
+void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob);
 
 int main() {
     char znak;
     fstream znajomi;
-    int liczbaZnajomych, licznik=0, LastID;
+    int liczbaZnajomych, licznik=0, LastIDAdresat;
     string linia;
-    vector <DaneUzytkownika> adresaci;
-    DaneUzytkownika USER;           // tymczasowa zmienna na pojedynczy rekord.
+    vector <DaneAdresata> adresaci;
+    DaneAdresata ADRESAT;           // tymczasowa zmienna na pojedynczy rekord.
 
 
-    znajomi.open("znajomi_nowy_format.txt.",ios::in);
+    znajomi.open("Adresaci.txt.",ios::in);
 
     if (znajomi.good()==false) {                    // sprawdzamy czy plik z danymi istnieje
         liczbaZnajomych=0;
@@ -39,12 +39,12 @@ int main() {
 
     else {
         while (getline(znajomi,linia)) {       // odczytuje kolejne linie dopoki getline nie zwtoci falsz
-            USER=KonwertujLinie(linia);
-            adresaci.push_back(USER);
+            ADRESAT=KonwertujLinie(linia);
+            adresaci.push_back(ADRESAT);
             licznik++;
         }
         liczbaZnajomych=licznik;
-        LastID=USER.ID;
+        LastIDAdresat=ADRESAT.IDAdresat;
     }
     znajomi.close();
 
@@ -65,8 +65,8 @@ int main() {
         system("cls");
         switch (znak) {
         case '1': {
-            liczbaZnajomych=DodajOsobe(liczbaZnajomych, adresaci, LastID);
-            LastID++;
+            liczbaZnajomych=DodajOsobe(liczbaZnajomych, adresaci, LastIDAdresat);
+            LastIDAdresat++;
         }
         break;
         case '2':
@@ -82,7 +82,7 @@ int main() {
             liczbaZnajomych=UsunOsobe(liczbaZnajomych, adresaci);
             int RozmiarWektora;
             RozmiarWektora=adresaci.size();
-            if (adresaci[RozmiarWektora-1].ID<LastID) LastID=adresaci[RozmiarWektora-1].ID;
+            if (adresaci[RozmiarWektora-1].IDAdresat<LastIDAdresat) LastIDAdresat=adresaci[RozmiarWektora-1].IDAdresat;
         }
             break;
         case '6':
@@ -98,73 +98,73 @@ int main() {
     return 0;
 
 }
-DaneUzytkownika KonwertujLinie (string linia) {
-    DaneUzytkownika USER;
+DaneAdresata KonwertujLinie (string linia) {
+    DaneAdresata ADRESAT;
     int pozycja;
     string TempString="";
 
     pozycja=linia.find("|");
     TempString=linia.substr(0,pozycja);
-    USER.ID=atoi(TempString.c_str());
+    ADRESAT.IDAdresat=atoi(TempString.c_str());
     linia.erase(0,pozycja+1);
 
     pozycja=linia.find("|");
-    USER.imie=linia.substr(0,pozycja);
+    ADRESAT.imie=linia.substr(0,pozycja);
     linia.erase(0,pozycja+1);
 
     pozycja=linia.find("|");
-    USER.nazwisko=linia.substr(0,pozycja);
+    ADRESAT.nazwisko=linia.substr(0,pozycja);
     linia.erase(0,pozycja+1);
 
     pozycja=linia.find("|");
-    USER.telefon=linia.substr(0,pozycja);
+    ADRESAT.telefon=linia.substr(0,pozycja);
     linia.erase(0,pozycja+1);
 
     pozycja=linia.find("|");
-    USER.mail=linia.substr(0,pozycja);
+    ADRESAT.mail=linia.substr(0,pozycja);
     linia.erase(0,pozycja+1);
 
     pozycja=linia.find("|");
-    USER.adres=linia.substr(0,pozycja);
+    ADRESAT.adres=linia.substr(0,pozycja);
     linia.erase(0,pozycja+1);
 
-    return USER;
+    return ADRESAT;
 }
 
-int DodajOsobe(int liczbaOsob, vector<DaneUzytkownika>& osoby, int ostatnieID) {
+int DodajOsobe(int liczbaOsob, vector<DaneAdresata>& osoby, int ostatnieIDAdresat) {
     fstream znajomi;
-    DaneUzytkownika User;
+    DaneAdresata ADRESAT;
     string DaneDoZapisu="";
 
     system("cls");
     cout << "Dodawanie osoby" << endl;
     cout << "Podaj dane osoby" << endl;
 
-    if (liczbaOsob>ostatnieID) User.ID=liczbaOsob+1;
-    else User.ID=ostatnieID+1;
+    if (liczbaOsob>ostatnieIDAdresat) ADRESAT.IDAdresat=liczbaOsob+1;
+    else ADRESAT.IDAdresat=ostatnieIDAdresat+1;
 
-    DaneDoZapisu=to_string(User.ID);
+    DaneDoZapisu=to_string(ADRESAT.IDAdresat);
     DaneDoZapisu+="|";
     cout << "Imie: ";
-    cin >> User.imie;
-    DaneDoZapisu+=User.imie+"|";
+    cin >> ADRESAT.imie;
+    DaneDoZapisu+=ADRESAT.imie+"|";
     cout << "Nazwisko: ";
-    cin >> User.nazwisko;
-    DaneDoZapisu+=User.nazwisko+"|";
+    cin >> ADRESAT.nazwisko;
+    DaneDoZapisu+=ADRESAT.nazwisko+"|";
     cout << "Telefon: ";
     cin.sync();
-    getline(cin,User.telefon);
-    DaneDoZapisu+=User.telefon+"|";
+    getline(cin,ADRESAT.telefon);
+    DaneDoZapisu+=ADRESAT.telefon+"|";
     cout << "Mail: ";
-    cin >> User.mail;
-    DaneDoZapisu+=User.mail+"|";
+    cin >> ADRESAT.mail;
+    DaneDoZapisu+=ADRESAT.mail+"|";
     cin.sync();
     cout << "Adres: ";
-    getline(cin,User.adres);
-    DaneDoZapisu+=User.adres+"|";
+    getline(cin,ADRESAT.adres);
+    DaneDoZapisu+=ADRESAT.adres+"|";
 
-    osoby.push_back(User);
-    znajomi.open("znajomi_nowy_format.txt.",ios::out|ios::app);      // zapisze dane do pliku w jednej linii
+    osoby.push_back(ADRESAT);
+    znajomi.open("Adresaci.txt.",ios::out|ios::app);      // zapisze dane do pliku w jednej linii
     znajomi<<DaneDoZapisu<<endl;
     znajomi.close();
     cout << "Osoba zostala dodana do bazy" << endl;
@@ -172,7 +172,7 @@ int DodajOsobe(int liczbaOsob, vector<DaneUzytkownika>& osoby, int ostatnieID) {
     return liczbaOsob+1;
 }
 
-void WyszukajPoImieniu (const vector<DaneUzytkownika>& osoby, int liczbaOsob) {
+void WyszukajPoImieniu (const vector<DaneAdresata>& osoby, int liczbaOsob) {
     system("cls");
     string wyszukajTo;
     cout << "Wyszukiwanie po imieniu" << endl;
@@ -180,7 +180,7 @@ void WyszukajPoImieniu (const vector<DaneUzytkownika>& osoby, int liczbaOsob) {
     cin >> wyszukajTo;
     for(int i=0; i<liczbaOsob; i++) {
         if (osoby[i].imie==wyszukajTo) {
-            cout<<"ID: "<< osoby[i].ID<<endl;
+            cout<<"ID: "<< osoby[i].IDAdresat<<endl;
             cout<<"Imie: "<< osoby[i].imie<<endl;
             cout<<"Nazwisko: "<< osoby[i].nazwisko<<endl;
             cout<<"Telefon: "<< osoby[i].telefon<<endl;
@@ -191,7 +191,7 @@ void WyszukajPoImieniu (const vector<DaneUzytkownika>& osoby, int liczbaOsob) {
     }
     system("pause");
 }
-void WyszukajPoNazwisku (const vector<DaneUzytkownika>& osoby, int liczbaOsob) {
+void WyszukajPoNazwisku (const vector<DaneAdresata>& osoby, int liczbaOsob) {
     system("cls");
     string wyszukajTo;
     cout << "Wyszukiwanie po nazwisku" << endl;
@@ -199,7 +199,7 @@ void WyszukajPoNazwisku (const vector<DaneUzytkownika>& osoby, int liczbaOsob) {
     cin >> wyszukajTo;
     for(int i=0; i<liczbaOsob; i++) {
         if (osoby[i].nazwisko==wyszukajTo) {
-            cout<<"ID: "<< osoby[i].ID<<endl;
+            cout<<"ID: "<< osoby[i].IDAdresat<<endl;
             cout<<"Imie: "<< osoby[i].imie<<endl;
             cout<<"Nazwisko: "<< osoby[i].nazwisko<<endl;
             cout<<"Telefon: "<< osoby[i].telefon<<endl;
@@ -211,11 +211,11 @@ void WyszukajPoNazwisku (const vector<DaneUzytkownika>& osoby, int liczbaOsob) {
     system("pause");
 }
 
-void WyswietlWszystko (const vector<DaneUzytkownika>& osoby, int liczbaOsob) {
+void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob) {
     system("cls");
     cout << "Wyswietlam dane wszystkich znajomych:" << endl;
     for (int i=0; i<liczbaOsob; i++) {
-        cout<<"ID: "<< osoby[i].ID<<endl;
+        cout<<"ID: "<< osoby[i].IDAdresat<<endl;
         cout<<"Imie: "<< osoby[i].imie<<endl;
         cout<<"Nazwisko: "<< osoby[i].nazwisko<<endl;
         cout<<"Telefon: "<< osoby[i].telefon<<endl;
@@ -226,7 +226,7 @@ void WyswietlWszystko (const vector<DaneUzytkownika>& osoby, int liczbaOsob) {
     system("pause");
 }
 
-int UsunOsobe (int liczbaOsob, vector<DaneUzytkownika>& osoby){
+int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby){
     int wyszukajTo, WskaznikRekordu=0;
     char znak;
     fstream znajomi;
@@ -238,8 +238,8 @@ int UsunOsobe (int liczbaOsob, vector<DaneUzytkownika>& osoby){
     cout << "Podaj ID rekordu, ktory chcesz usunac:" <<endl;
     cin >> wyszukajTo;
     for(int i=0; i<liczbaOsob; i++) {
-        if (osoby[i].ID==wyszukajTo) {
-            cout<<"ID: "<< osoby[i].ID<<endl;
+        if (osoby[i].IDAdresat==wyszukajTo) {
+            cout<<"ID: "<< osoby[i].IDAdresat<<endl;
             cout<<"Imie: "<< osoby[i].imie<<endl;
             cout<<"Nazwisko: "<< osoby[i].nazwisko<<endl;
             cout<<"Telefon: "<< osoby[i].telefon<<endl;
@@ -257,13 +257,13 @@ int UsunOsobe (int liczbaOsob, vector<DaneUzytkownika>& osoby){
     osoby.erase(osoby.begin()+WskaznikRekordu);
     liczbaOsob--;
 
-    znajomi.open("znajomi_nowy_format.txt.",ios::out|ios::trunc);
+    znajomi.open("Adresaci.txt.",ios::out|ios::trunc);
     znajomi.close();
 
-    znajomi.open("znajomi_nowy_format.txt.",ios::out|ios::app);
+    znajomi.open("Adresaci.txt.",ios::out|ios::app);
     for(int i=0; i<liczbaOsob; i++) {
         TempString="";
-        TempString=to_string(osoby[i].ID);
+        TempString=to_string(osoby[i].IDAdresat);
         TempString+="|"+osoby[i].imie+"|"+osoby[i].nazwisko+"|";
         TempString+=osoby[i].telefon+"|"+osoby[i].mail+"|"+osoby[i].adres+"|";
         znajomi<<TempString<<endl;
@@ -283,7 +283,7 @@ int UsunOsobe (int liczbaOsob, vector<DaneUzytkownika>& osoby){
 
 }
 
-void EdytujRekordWedlugID (vector<DaneUzytkownika>& osoby, int liczbaOsob) {
+void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob) {
     int wyszukajTo, WskaznikRekordu=0;
     char znak;
     string TempString="";
@@ -294,8 +294,8 @@ void EdytujRekordWedlugID (vector<DaneUzytkownika>& osoby, int liczbaOsob) {
     cout << "Podaj ID rekordu, ktory chcesz edytowac:" <<endl;
     cin >> wyszukajTo;
     for(int i=0; i<liczbaOsob; i++) {
-        if (osoby[i].ID==wyszukajTo) {
-            cout<<"ID: "<< osoby[i].ID<<endl;
+        if (osoby[i].IDAdresat==wyszukajTo) {
+            cout<<"ID: "<< osoby[i].IDAdresat<<endl;
             cout<<"Imie: "<< osoby[i].imie<<endl;
             cout<<"Nazwisko: "<< osoby[i].nazwisko<<endl;
             cout<<"Telefon: "<< osoby[i].telefon<<endl;
@@ -360,13 +360,13 @@ void EdytujRekordWedlugID (vector<DaneUzytkownika>& osoby, int liczbaOsob) {
     }
     break;
     }
-    znajomi.open("znajomi_nowy_format.txt.",ios::out|ios::trunc);
+    znajomi.open("Adresaci.txt.",ios::out|ios::trunc);
     znajomi.close();
 
-    znajomi.open("znajomi_nowy_format.txt.",ios::out|ios::app);
+    znajomi.open("Adresaci.txt.",ios::out|ios::app);
     for(int i=0; i<liczbaOsob; i++) {
         TempString="";
-        TempString=to_string(osoby[i].ID);
+        TempString=to_string(osoby[i].IDAdresat);
         TempString+="|"+osoby[i].imie+"|"+osoby[i].nazwisko+"|";
         TempString+=osoby[i].telefon+"|"+osoby[i].mail+"|"+osoby[i].adres+"|";
         znajomi<<TempString<<endl;

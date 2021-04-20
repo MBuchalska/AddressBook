@@ -7,11 +7,18 @@
 
 using namespace std;
 
+struct DaneUzytkownika {
+    int UserID;
+    string UserName, UserPassword;
+};
+
 struct DaneAdresata {
     int IDAdresat;
     string imie, nazwisko, telefon, mail, adres;
 };
 
+DaneUzytkownika PrzepiszDoWektora (string linia);
+int RejestrujUzytkownika (int liczbaUzytkownikow, vector<DaneUzytkownika>& users);
 DaneAdresata KonwertujLinie (string linia);
 int DodajOsobe(int liczbaOsob, vector<DaneAdresata>& osoby, int ostatnieIDAdresat);
 void WyszukajPoImieniu (const vector<DaneAdresata>& osoby, int liczbaOsob);
@@ -22,15 +29,19 @@ void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob);
 
 int main() {
     char znak;
-    fstream znajomi;
-    int liczbaZnajomych, licznik=0, LastIDAdresat, UserID=0;
+    fstream uzytkownicy, znajomi;
+    int liczbaUzytkownikow, TempUserID=0;
+    int liczbaZnajomych, licznik=0, LastIDAdresat;
     string linia;
+    vector <DaneUzytkownika> users;
     vector <DaneAdresata> adresaci;
-    DaneAdresata ADRESAT;           // tymczasowa zmienna na pojedynczy rekord.
+    DaneUzytkownika USER;           // zmienna na pojedynczego uzytkownika
+    DaneAdresata ADRESAT;           // tymczasowa zmienna na pojedynczego adresata
 
+    cout << "Witaj w swojej ksiazce adresowej" << endl;
 
     while (true) {
-        cout << "Witaj w swojej ksiazce adresowej" << endl;
+        cout<< endl;
         cout << "Co chcesz zrobic:" << endl;
         cout << "1. Rejestracja nowego uzytkownika" << endl;
         cout << "2. Logowanie uzytkownika" << endl;
@@ -39,13 +50,34 @@ int main() {
 
         system("cls");
 
+        uzytkownicy.open("Uzytkownicy.txt.",ios::in);
+
+        if (uzytkownicy.good()==false) {                    // sprawdzamy czy plik z danymi istnieje
+            liczbaUzytkownikow=0;
+            cout <<"Nie ma jeszcze zadnych zarejestrowanych uzytnowniow. Zarejstruj sie." << endl;
+            system("pause");
+        }
+
+        else {
+            while (getline(uzytkownicy,linia)) {       // odczytuje kolejne linie dopoki getline nie zwtoci falsz
+                USER= PrzepiszDoWektora(linia);
+                users.push_back(USER);
+                licznik++;
+            }
+            liczbaUzytkownikow=licznik;
+        }
+        uzytkownicy.close();
+
         switch (znak) {
-        case '1':
+        case '1': {
             cout << "1. Rejestracja nowego uzytkownika" << endl;
-            break;
+            liczbaUzytkownikow=RejestrujUzytkownika(liczbaUzytkownikow, users);
+        }
+
+        break;
         case '2': {
             cout << "2. Logowanie uzytkownika" << endl;
-            UserID=1;                                       // tymczasowy symulator zalogowania
+            TempUserID=1;                                       // tymczasowy symulator zalogowania
 
             znajomi.open("Adresaci.txt.",ios::in);
 
@@ -66,7 +98,7 @@ int main() {
             }
             znajomi.close();
 
-            while (UserID!=0) {
+            while (TempUserID!=0) {
                 cout << endl;
                 cout << "Wybierz co chcesz zrobic" << endl;
                 cout << "1. Dodaj osobe" << endl;
@@ -110,7 +142,7 @@ int main() {
                     break;
                 case '9': {
                     cout<<"Wylogowano"<<endl;
-                    UserID=0;
+                    TempUserID=0;
                 }
                 break;
                 }
@@ -128,6 +160,62 @@ int main() {
     }
     return 0;
 }
+
+DaneUzytkownika PrzepiszDoWektora (string linia) {
+    DaneUzytkownika User;
+    int pozycja;
+    string TempString="";
+
+    pozycja=linia.find("|");
+    TempString=linia.substr(0,pozycja);
+    User.UserID=atoi(TempString.c_str());
+    linia.erase(0,pozycja+1);
+
+    pozycja=linia.find("|");
+    User.UserName=linia.substr(0,pozycja);
+    linia.erase(0,pozycja+1);
+
+    pozycja=linia.find("|");
+    User.UserPassword=linia.substr(0,pozycja);
+    linia.erase(0,pozycja+1);
+
+    return User;
+}
+
+int RejestrujUzytkownika (int liczbaUzytkownikow, vector<DaneUzytkownika>& users) {
+    fstream uzytkownicy;
+    DaneUzytkownika USER;
+    string DaneDoZapisu="";
+
+    system("cls");
+    cout << "Rejestracja nowego uzytkownika" << endl;
+    cout << "Podaj dane" << endl;
+
+    USER.UserID=liczbaUzytkownikow+1;
+    DaneDoZapisu=to_string(USER.UserID);
+    DaneDoZapisu+="|";
+
+    cout << "Podaj nazwe uzytkownika: ";
+    cin >> USER.UserName;
+    DaneDoZapisu+=USER.UserName+"|";
+
+    cout << "Podaj haslo do konta: ";
+    cin >> USER.UserPassword;
+    DaneDoZapisu+=USER.UserPassword+"|";
+
+    users.push_back(USER);
+
+    uzytkownicy.open("Uzytkownicy.txt.",ios::out|ios::app);
+    uzytkownicy<<DaneDoZapisu<<endl;
+    uzytkownicy.close();
+
+    cout<<endl;
+    cout<<"Dane uzytkownika zapisane." << endl;
+    system("pause");
+
+    return liczbaUzytkownikow+1;
+}
+
 DaneAdresata KonwertujLinie (string linia) {
     DaneAdresata ADRESAT;
     int pozycja;

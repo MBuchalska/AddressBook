@@ -23,80 +23,110 @@ void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob);
 int main() {
     char znak;
     fstream znajomi;
-    int liczbaZnajomych, licznik=0, LastIDAdresat;
+    int liczbaZnajomych, licznik=0, LastIDAdresat, UserID=0;
     string linia;
     vector <DaneAdresata> adresaci;
     DaneAdresata ADRESAT;           // tymczasowa zmienna na pojedynczy rekord.
 
 
-    znajomi.open("Adresaci.txt.",ios::in);
-
-    if (znajomi.good()==false) {                    // sprawdzamy czy plik z danymi istnieje
-        liczbaZnajomych=0;
-        cout <<"Plik z lista adresowa nie istnieje. Dodaj najpierw kilku znajomych";
-        system("pause");
-    }
-
-    else {
-        while (getline(znajomi,linia)) {       // odczytuje kolejne linie dopoki getline nie zwtoci falsz
-            ADRESAT=KonwertujLinie(linia);
-            adresaci.push_back(ADRESAT);
-            licznik++;
-        }
-        liczbaZnajomych=licznik;
-        LastIDAdresat=ADRESAT.IDAdresat;
-    }
-    znajomi.close();
-
-    cout << "Witaj w swojej ksiazce adresowej" << endl;
     while (true) {
-        cout << endl;
-        cout << "Wybierz co chcesz zrobic" << endl;
-        cout << "Menu glowne:" << endl;
-        cout << "1. Dodaj osobe" << endl;
-        cout << "2. Wyszukaj po imieniu" << endl;
-        cout << "3. Wyszukaj po nazwisku" << endl;
-        cout << "4. Wyswietl wszystkich adresatow" << endl;
-        cout << "5. Usun adresata" << endl;
-        cout << "6. Edytuj adresata" << endl;
+        cout << "Witaj w swojej ksiazce adresowej" << endl;
+        cout << "Co chcesz zrobic:" << endl;
+        cout << "1. Rejestracja nowego uzytkownika" << endl;
+        cout << "2. Logowanie uzytkownika" << endl;
         cout << "9. Koniec pracy" << endl;
         cin >> znak;
 
         system("cls");
+
         switch (znak) {
-        case '1': {
-            liczbaZnajomych=DodajOsobe(liczbaZnajomych, adresaci, LastIDAdresat);
-            LastIDAdresat++;
+        case '1':
+            cout << "1. Rejestracja nowego uzytkownika" << endl;
+            break;
+        case '2': {
+            cout << "2. Logowanie uzytkownika" << endl;
+            UserID=1;                                       // tymczasowy symulator zalogowania
+
+            znajomi.open("Adresaci.txt.",ios::in);
+
+            if (znajomi.good()==false) {                    // sprawdzamy czy plik z danymi istnieje
+                liczbaZnajomych=0;
+                cout <<"Plik z lista adresowa nie istnieje. Dodaj najpierw kilku znajomych";
+                system("pause");
+            }
+
+            else {
+                while (getline(znajomi,linia)) {       // odczytuje kolejne linie dopoki getline nie zwtoci falsz
+                    ADRESAT=KonwertujLinie(linia);
+                    adresaci.push_back(ADRESAT);
+                    licznik++;
+                }
+                liczbaZnajomych=licznik;
+                LastIDAdresat=ADRESAT.IDAdresat;
+            }
+            znajomi.close();
+
+            while (UserID!=0) {
+                cout << endl;
+                cout << "Wybierz co chcesz zrobic" << endl;
+                cout << "1. Dodaj osobe" << endl;
+                cout << "2. Wyszukaj po imieniu" << endl;
+                cout << "3. Wyszukaj po nazwisku" << endl;
+                cout << "4. Wyswietl wszystkich adresatow" << endl;
+                cout << "5. Usun adresata" << endl;
+                cout << "6. Edytuj adresata" << endl;
+                cout << "7. Zmiana hasla" << endl;
+                cout << "9. Wyloguj" << endl;
+                cin >> znak;
+
+                system("cls");
+                switch (znak) {
+                case '1': {
+                    liczbaZnajomych=DodajOsobe(liczbaZnajomych, adresaci, LastIDAdresat);
+                    LastIDAdresat++;
+                }
+                break;
+                case '2':
+                    WyszukajPoImieniu (adresaci,liczbaZnajomych);
+                    break;
+                case '3':
+                    WyszukajPoNazwisku (adresaci,liczbaZnajomych);
+                    break;
+                case '4':
+                    WyswietlWszystko (adresaci,liczbaZnajomych);
+                    break;
+                case '5': {
+                    liczbaZnajomych=UsunOsobe(liczbaZnajomych, adresaci);
+                    int RozmiarWektora;
+                    RozmiarWektora=adresaci.size();
+                    if (adresaci[RozmiarWektora-1].IDAdresat<LastIDAdresat) LastIDAdresat=adresaci[RozmiarWektora-1].IDAdresat;
+                }
+                break;
+                case '6':
+                    EdytujRekordWedlugID (adresaci,liczbaZnajomych);
+                    break;
+                case '7':
+                    cout << "7. Zmiana hasla" << endl;
+                    break;
+                case '9': {
+                    cout<<"Wylogowano"<<endl;
+                    UserID=0;
+                }
+                break;
+                }
+            }
         }
         break;
-        case '2':
-            WyszukajPoImieniu (adresaci,liczbaZnajomych);
-            break;
-        case '3':
-            WyszukajPoNazwisku (adresaci,liczbaZnajomych);
-            break;
-        case '4':
-            WyswietlWszystko (adresaci,liczbaZnajomych);
-            break;
-        case '5':{
-            liczbaZnajomych=UsunOsobe(liczbaZnajomych, adresaci);
-            int RozmiarWektora;
-            RozmiarWektora=adresaci.size();
-            if (adresaci[RozmiarWektora-1].IDAdresat<LastIDAdresat) LastIDAdresat=adresaci[RozmiarWektora-1].IDAdresat;
-        }
-            break;
-        case '6':
-            EdytujRekordWedlugID (adresaci,liczbaZnajomych);
-            break;
+
         case '9': {
             cout<<"Koniec pracy. Dziekujemy za skorzystanie z programu"<<endl;
             exit(0);
         }
         break;
+
         }
     }
     return 0;
-
 }
 DaneAdresata KonwertujLinie (string linia) {
     DaneAdresata ADRESAT;
@@ -226,7 +256,7 @@ void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob) {
     system("pause");
 }
 
-int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby){
+int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby) {
     int wyszukajTo, WskaznikRekordu=0;
     char znak;
     fstream znajomi;
@@ -253,26 +283,26 @@ int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby){
     cout<<"Czy napewno chcesz usunac ten rekord? (t/n)" << endl;
     cin>> znak;
 
-    if (znak=='t'){
-    osoby.erase(osoby.begin()+WskaznikRekordu);
-    liczbaOsob--;
+    if (znak=='t') {
+        osoby.erase(osoby.begin()+WskaznikRekordu);
+        liczbaOsob--;
 
-    znajomi.open("Adresaci.txt.",ios::out|ios::trunc);
-    znajomi.close();
+        znajomi.open("Adresaci.txt.",ios::out|ios::trunc);
+        znajomi.close();
 
-    znajomi.open("Adresaci.txt.",ios::out|ios::app);
-    for(int i=0; i<liczbaOsob; i++) {
-        TempString="";
-        TempString=to_string(osoby[i].IDAdresat);
-        TempString+="|"+osoby[i].imie+"|"+osoby[i].nazwisko+"|";
-        TempString+=osoby[i].telefon+"|"+osoby[i].mail+"|"+osoby[i].adres+"|";
-        znajomi<<TempString<<endl;
-    }
-    znajomi.close();
+        znajomi.open("Adresaci.txt.",ios::out|ios::app);
+        for(int i=0; i<liczbaOsob; i++) {
+            TempString="";
+            TempString=to_string(osoby[i].IDAdresat);
+            TempString+="|"+osoby[i].imie+"|"+osoby[i].nazwisko+"|";
+            TempString+=osoby[i].telefon+"|"+osoby[i].mail+"|"+osoby[i].adres+"|";
+            znajomi<<TempString<<endl;
+        }
+        znajomi.close();
 
-    cout << "Rekord zostal usuniety" << endl;
-    system("pause");
-    return liczbaOsob;
+        cout << "Rekord zostal usuniety" << endl;
+        system("pause");
+        return liczbaOsob;
     }
 
     else {

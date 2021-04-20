@@ -45,6 +45,7 @@ int main() {
             break;
         case '2': {
             cout << "2. Logowanie uzytkownika" << endl;
+            UserID=1;                                       // tymczasowy symulator zalogowania
 
             znajomi.open("Adresaci.txt.",ios::in);
 
@@ -65,8 +66,7 @@ int main() {
             }
             znajomi.close();
 
-
-            while (true) {
+            while (UserID!=0) {
                 cout << endl;
                 cout << "Wybierz co chcesz zrobic" << endl;
                 cout << "1. Dodaj osobe" << endl;
@@ -75,6 +75,7 @@ int main() {
                 cout << "4. Wyswietl wszystkich adresatow" << endl;
                 cout << "5. Usun adresata" << endl;
                 cout << "6. Edytuj adresata" << endl;
+                cout << "7. Zmiana hasla" << endl;
                 cout << "9. Wyloguj" << endl;
                 cin >> znak;
 
@@ -104,21 +105,28 @@ int main() {
                 case '6':
                     EdytujRekordWedlugID (adresaci,liczbaZnajomych);
                     break;
+                case '7':
+                    cout << "7. Zmiana hasla" << endl;
+                    break;
                 case '9': {
-                    cout<<"Koniec pracy. Dziekujemy za skorzystanie z programu"<<endl;
-                    exit(0);
+                    cout<<"Wylogowano"<<endl;
+                    UserID=0;
                 }
                 break;
                 }
             }
         }
+        break;
+
         case '9': {
             cout<<"Koniec pracy. Dziekujemy za skorzystanie z programu"<<endl;
             exit(0);
         }
-        return 0;
+        break;
+
         }
     }
+    return 0;
 }
 DaneAdresata KonwertujLinie (string linia) {
     DaneAdresata ADRESAT;

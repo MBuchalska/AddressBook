@@ -19,6 +19,7 @@ struct DaneAdresata {
 
 DaneUzytkownika PrzepiszDoWektora (string linia);
 int RejestrujUzytkownika (int liczbaUzytkownikow, vector<DaneUzytkownika>& users);
+int ZalogujUzytkownika (int liczbaUzytkownikow, const vector<DaneUzytkownika>& users);
 DaneAdresata KonwertujLinie (string linia);
 int DodajOsobe(int liczbaOsob, vector<DaneAdresata>& osoby, int ostatnieIDAdresat);
 void WyszukajPoImieniu (const vector<DaneAdresata>& osoby, int liczbaOsob);
@@ -31,7 +32,7 @@ int main() {
     char znak;
     fstream uzytkownicy, znajomi;
     int liczbaUzytkownikow, TempUserID=0;
-    int liczbaZnajomych, licznik=0, LastIDAdresat;
+    int liczbaZnajomych=0, licznik=0, LastIDAdresat;
     string linia;
     vector <DaneUzytkownika> users;
     vector <DaneAdresata> adresaci;
@@ -65,6 +66,7 @@ int main() {
                 licznik++;
             }
             liczbaUzytkownikow=licznik;
+            licznik=0;
         }
         uzytkownicy.close();
 
@@ -73,11 +75,11 @@ int main() {
             cout << "1. Rejestracja nowego uzytkownika" << endl;
             liczbaUzytkownikow=RejestrujUzytkownika(liczbaUzytkownikow, users);
         }
-
         break;
+
         case '2': {
             cout << "2. Logowanie uzytkownika" << endl;
-            TempUserID=1;                                       // tymczasowy symulator zalogowania
+            TempUserID=ZalogujUzytkownika(liczbaUzytkownikow, users);
 
             znajomi.open("Adresaci.txt.",ios::in);
 
@@ -214,6 +216,39 @@ int RejestrujUzytkownika (int liczbaUzytkownikow, vector<DaneUzytkownika>& users
     system("pause");
 
     return liczbaUzytkownikow+1;
+}
+
+int ZalogujUzytkownika (int liczbaUzytkownikow, const vector<DaneUzytkownika>& users) {
+    string TempLogin="", TempPassword="";
+    DaneUzytkownika USER;
+
+    system("cls");
+    cout << "Logowanie" << endl;
+    cout << "Podaj nazwe uzytkownika: " ;
+    cin >> TempLogin;
+    cout <<endl;
+
+    for (int i=0; i<liczbaUzytkownikow; i++) {
+        if (users[i].UserName==TempLogin) {
+                cout << "Znaleziono login w bazie." << endl;
+            for (int j=3; j>0; j--) {
+                cout << "Podaj haslo: ";
+                cin >> TempPassword;
+                cout<<endl;
+                if (users[i].UserPassword==TempPassword) {
+                    cout << "Logowanie poprawne" <<endl;
+                    cout << "Witaj " << users[i].UserName << endl;
+                    return users[i].UserID;
+                } else {
+                    cout << "Haslo niepoprawne. Pozostalo prob: " << j-1 << endl;
+                }
+            }
+        cout << "Logowanie nieudane. Podano 3 razy niepoprawne haslo." << endl;
+        return 0;
+        }
+    }
+    cout << "Logowanie nieudane. Nie ma takiego uzytkownika w bazie." << endl;
+    return 0;
 }
 
 DaneAdresata KonwertujLinie (string linia) {

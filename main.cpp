@@ -22,9 +22,9 @@ int RejestrujUzytkownika (int liczbaUzytkownikow, vector<DaneUzytkownika>& users
 int ZalogujUzytkownika (int liczbaUzytkownikow, const vector<DaneUzytkownika>& users);
 DaneAdresata KonwertujLinie (string linia);
 int DodajOsobe(int liczbaOsob, vector<DaneAdresata>& osoby, int ostatnieIDAdresat, int ZalogowanyUzytkownikID);
-void WyszukajPoImieniu (const vector<DaneAdresata>& osoby, int liczbaOsob);
-void WyszukajPoNazwisku (const vector<DaneAdresata>& osoby, int liczbaOsob);
-void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob);
+void WyszukajPoImieniu (const vector<DaneAdresata>& osoby, int liczbaOsob, int ZalogowanyUzytkownikID);
+void WyszukajPoNazwisku (const vector<DaneAdresata>& osoby, int liczbaOsob, int ZalogowanyUzytkownikID);
+void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob, int ZalogowanyUzytkownikID);
 int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby);
 void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob);
 void ZmienHasloUzytkownika (int UzytkownikID, vector<DaneUzytkownika>& users, int liczbaUzytkownikow);
@@ -122,13 +122,13 @@ int main() {
                 }
                 break;
                 case '2':
-                    WyszukajPoImieniu (adresaci,liczbaZnajomych);
+                    WyszukajPoImieniu (adresaci,liczbaZnajomych, TempUserID);
                     break;
                 case '3':
-                    WyszukajPoNazwisku (adresaci,liczbaZnajomych);
+                    WyszukajPoNazwisku (adresaci,liczbaZnajomych, TempUserID);
                     break;
                 case '4':
-                    WyswietlWszystko (adresaci,liczbaZnajomych);
+                    WyswietlWszystko (adresaci,liczbaZnajomych, TempUserID);
                     break;
                 case '5': {
                     liczbaZnajomych=UsunOsobe(liczbaZnajomych, adresaci);
@@ -333,14 +333,14 @@ int DodajOsobe(int liczbaOsob, vector<DaneAdresata>& osoby, int ostatnieIDAdresa
     return liczbaOsob+1;
 }
 
-void WyszukajPoImieniu (const vector<DaneAdresata>& osoby, int liczbaOsob) {
+void WyszukajPoImieniu (const vector<DaneAdresata>& osoby, int liczbaOsob, int ZalogowanyUzytkownikID) {
     system("cls");
     string wyszukajTo;
     cout << "Wyszukiwanie po imieniu" << endl;
     cout << "Podaj imie znajomego" <<endl;
     cin >> wyszukajTo;
     for(int i=0; i<liczbaOsob; i++) {
-        if (osoby[i].imie==wyszukajTo) {
+        if ((osoby[i].OwnerID==ZalogowanyUzytkownikID)&&(osoby[i].imie==wyszukajTo)) {
             cout<<"ID: "<< osoby[i].IDAdresat<<endl;
             cout<<"Imie: "<< osoby[i].imie<<endl;
             cout<<"Nazwisko: "<< osoby[i].nazwisko<<endl;
@@ -352,14 +352,14 @@ void WyszukajPoImieniu (const vector<DaneAdresata>& osoby, int liczbaOsob) {
     }
     system("pause");
 }
-void WyszukajPoNazwisku (const vector<DaneAdresata>& osoby, int liczbaOsob) {
+void WyszukajPoNazwisku (const vector<DaneAdresata>& osoby, int liczbaOsob, int ZalogowanyUzytkownikID) {
     system("cls");
     string wyszukajTo;
     cout << "Wyszukiwanie po nazwisku" << endl;
     cout << "Podaj nazwisko znajomego" <<endl;
     cin >> wyszukajTo;
     for(int i=0; i<liczbaOsob; i++) {
-        if (osoby[i].nazwisko==wyszukajTo) {
+        if ((osoby[i].OwnerID==ZalogowanyUzytkownikID)&&(osoby[i].nazwisko==wyszukajTo)) {
             cout<<"ID: "<< osoby[i].IDAdresat<<endl;
             cout<<"Imie: "<< osoby[i].imie<<endl;
             cout<<"Nazwisko: "<< osoby[i].nazwisko<<endl;
@@ -372,10 +372,11 @@ void WyszukajPoNazwisku (const vector<DaneAdresata>& osoby, int liczbaOsob) {
     system("pause");
 }
 
-void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob) {
+void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob, int ZalogowanyUzytkownikID) {
     system("cls");
     cout << "Wyswietlam dane wszystkich znajomych:" << endl;
     for (int i=0; i<liczbaOsob; i++) {
+        if (osoby[i].OwnerID==ZalogowanyUzytkownikID){
         cout<<"ID: "<< osoby[i].IDAdresat<<endl;
         cout<<"Imie: "<< osoby[i].imie<<endl;
         cout<<"Nazwisko: "<< osoby[i].nazwisko<<endl;
@@ -383,6 +384,7 @@ void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob) {
         cout<<"Mail: " << osoby[i].mail<<endl;
         cout<<"Adres: " << osoby[i].adres<<endl;
         cout<<endl;
+    }
     }
     system("pause");
 }

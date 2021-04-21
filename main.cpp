@@ -13,7 +13,7 @@ struct DaneUzytkownika {
 };
 
 struct DaneAdresata {
-    int IDAdresat;
+    int IDAdresat, OwnerID;
     string imie, nazwisko, telefon, mail, adres;
 };
 

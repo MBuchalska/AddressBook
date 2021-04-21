@@ -86,7 +86,7 @@ int main() {
 
             if (znajomi.good()==false) {                    // sprawdzamy czy plik z danymi istnieje
                 liczbaZnajomych=0;
-                cout <<"Plik z lista adresowa nie istnieje. Dodaj najpierw kilku znajomych";
+                cout <<"Plik z lista adresowa nie istnieje. Dodaj najpierw kilku znajomych"<<endl;
                 system("pause");
             }
 
@@ -459,7 +459,7 @@ void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob, int Zalo
     cout << "Podaj ID rekordu, ktory chcesz edytowac:" <<endl;
     cin >> wyszukajTo;
     for(int i=0; i<liczbaOsob; i++) {
-        if (osoby[i].IDAdresat==wyszukajTo) {
+        if ((osoby[i].OwnerID==ZalogowanyUzytkownikID)&&(osoby[i].IDAdresat==wyszukajTo)) {
             cout<<"ID: "<< osoby[i].IDAdresat<<endl;
             cout<<"Imie: "<< osoby[i].imie<<endl;
             cout<<"Nazwisko: "<< osoby[i].nazwisko<<endl;
@@ -532,6 +532,8 @@ void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob, int Zalo
     for(int i=0; i<liczbaOsob; i++) {
         TempString="";
         TempString=to_string(osoby[i].IDAdresat);
+                    TempString+="|";
+            TempString+=to_string(osoby[i].OwnerID);
         TempString+="|"+osoby[i].imie+"|"+osoby[i].nazwisko+"|";
         TempString+=osoby[i].telefon+"|"+osoby[i].mail+"|"+osoby[i].adres+"|";
         znajomi<<TempString<<endl;

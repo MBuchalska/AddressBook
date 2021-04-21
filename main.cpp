@@ -21,7 +21,7 @@ DaneUzytkownika PrzepiszDoWektora (string linia);
 int RejestrujUzytkownika (int liczbaUzytkownikow, vector<DaneUzytkownika>& users);
 int ZalogujUzytkownika (int liczbaUzytkownikow, const vector<DaneUzytkownika>& users);
 DaneAdresata KonwertujLinie (string linia);
-int DodajOsobe(int liczbaOsob, vector<DaneAdresata>& osoby, int ostatnieIDAdresat);
+int DodajOsobe(int liczbaOsob, vector<DaneAdresata>& osoby, int ostatnieIDAdresat, int ZalogowanyUzytkownikID);
 void WyszukajPoImieniu (const vector<DaneAdresata>& osoby, int liczbaOsob);
 void WyszukajPoNazwisku (const vector<DaneAdresata>& osoby, int liczbaOsob);
 void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob);
@@ -80,7 +80,7 @@ int main() {
 
         case '2': {
             cout << "2. Logowanie uzytkownika" << endl;
-            TempUserID=ZalogujUzytkownika(liczbaUzytkownikow);
+            TempUserID=ZalogujUzytkownika(liczbaUzytkownikow, users);
 
             znajomi.open("Adresaci.txt.",ios::in);
 
@@ -117,7 +117,7 @@ int main() {
                 system("cls");
                 switch (znak) {
                 case '1': {
-                    liczbaZnajomych=DodajOsobe(liczbaZnajomych, adresaci, LastIDAdresat);
+                    liczbaZnajomych=DodajOsobe(liczbaZnajomych, adresaci, LastIDAdresat, TempUserID);
                     LastIDAdresat++;
                 }
                 break;
@@ -290,7 +290,7 @@ DaneAdresata KonwertujLinie (string linia) {
     return ADRESAT;
 }
 
-int DodajOsobe(int liczbaOsob, vector<DaneAdresata>& osoby, int ostatnieIDAdresat) {
+int DodajOsobe(int liczbaOsob, vector<DaneAdresata>& osoby, int ostatnieIDAdresat, int ZalogowanyUzytkownikID) {
     fstream znajomi;
     DaneAdresata ADRESAT;
     string DaneDoZapisu="";
@@ -303,6 +303,8 @@ int DodajOsobe(int liczbaOsob, vector<DaneAdresata>& osoby, int ostatnieIDAdresa
     else ADRESAT.IDAdresat=ostatnieIDAdresat+1;
 
     DaneDoZapisu=to_string(ADRESAT.IDAdresat);
+    DaneDoZapisu+="|";
+    DaneDoZapisu+=to_string(ZalogowanyUzytkownikID);
     DaneDoZapisu+="|";
     cout << "Imie: ";
     cin >> ADRESAT.imie;

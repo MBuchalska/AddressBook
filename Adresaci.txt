@@ -17,3 +17,5 @@
 17|1|Felicja|Micek|84903945|fela.m@op.pl|Wroclaw, ul Zlota 37/4|
 18|3|Amanda|Kowalska|7583204947|amy.k@gmail.com|Rodlin, ul Maksi 6|
 19|1|Sandra|Smith|92793274|sandy.smith@wp.pl|Radlin, ul Okolna 11/2|
+20|4|Boguslaw|Linda|777333111|boguslaw@linda.pl|ul. Lotnikow 3a, Warszawa|
+21|5|Radoslaw|Pazura|666333111|radoslaw@pazura.pl|ul. 3 maja 3a, Lodz|

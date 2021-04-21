@@ -1,19 +1,22 @@
-1|Ewa|Kot|483920839|kot.e@gmail.com|Krakow, ul. Zielona 3|
-2|Adam|Ross|382938029|adam.ross@gmail.com|Warszawa, ul. Niebieska 4/3|
-3|Iwona|Misiek|874938273|misiek@op.pl|Miasto, ul. Sienna 21|
-4|Ewa|Kowalska|483902989|e.ko@col.fr|Paryz, via Cotta 4|
-5|Wanda|Nowak|758430293|nowak@mail.com|Nowa Zelandia|
-6|Krzysztof|Krawczyk|489938203|krzysio@kr.pl|Frankfurt|
-7|Anna|Kowalska|463829039|ania@kotek.pl|Wroclaw|
-8|Kasia|Smith|473820934|smith@ewa.com|New York|
-9|Mikolaj|Kania|74832034|grzyb@kotek.pl|Przeginia 4|
-10|Ignacy|Wolski|482930498|igi@wol.pl|Olsztyn, ul Slodka 4|
-11|Agnieszka|Kowalska|893748290|aga.k@gmail.com|Wrzosowa 467|
-12|Artur|Nowak|333 222 111|artur@nowak.pl|ul. Wesolˆa 3a; 33-300 Krakow|
-13|Bartek|Glowacki|333 222 111|bartek@glowacki.pl|ul. Sˆoneczna 61; 33-330 Krakow|
-14|Marek|Nowak|849203458|m.nowak@gmail.com|Orenta 44|
-15|Agata|Wiœniewska|444 222 111|agata@wisniewska.pl|ul. Piêkna 7/8; 33-300 Krakow|
-16|Anna|Nowak|74892032|anowa@mail.com|Julianow 46|
-17|Felicja|Micek|84903945|fela.m@op.pl|Wroclaw, ul Zlota 37/4|
-18|Amanda|Kowalska|7583204947|amy.k@gmail.com|Rodlin, ul Maksi 6|
-19|Sandra|Smith|92793274|sandy.smith@wp.pl|Radlin, ul Okolna 11/2|
+1|1|Ewa|Kot|483920839|kot.e@gmail.com|Krakow, ul. Zielona 3|
+2|1|Adam|Ross|382938029|adam.ross@gmail.com|Warszawa, ul. Niebieska 4/3|
+3|4|Iwona|Misiek|874938273|misiek@op.pl|Miasto, ul. Sienna 21|
+4|2|Ewa|Kowalska|483902989|e.ko@col.fr|Paryz, via Cotta 4|
+5|3|Wanda|Nowak|758430293|nowak@mail.com|Nowa Zelandia|
+6|2|Krzysztof|Krawczyk|489938203|krzysio@kr.pl|Frankfurt|
+7|1|Anna|Kowalska|463829039|ania@kotek.pl|Wroclaw|
+8|5|Kasia|Smith|473820934|smith@ewa.com|New York|
+9|5|Andrzej|Kania|74832034|grzyb@kotek.pl|Przeginia 4|
+10|2|Ignacy|Wolski|482930498|igi@wol.pl|Olsztyn, ul Slodka 4|
+11|3|Agnieszka|Kowalska|893748290|aga.k@gmail.com|Wrzosowa 467|
+12|4|Artur|Nowak|333 222 111|artur@nowak.pl|ul. Wesolˆa 3a; 33-300 Krakow|
+13|4|Bartek|Glowacki|333 222 111|bartek@glowacki.pl|ul. Sˆoneczna 61; 33-330 Krakow|
+14|6|Marek|Nowak|849203458|m.nowak@gmail.com|Orenta 44|
+15|2|Agata|Wiœniewska|444 222 111|agata@wisniewska.pl|ul. Piêkna 7/8; 33-300 Krakow|
+16|6|Anna|Nowak|74892032|anowa@mail.com|Julianow 46|
+17|1|Felicja|Micek|84903945|fela.m@op.pl|Wroclaw, ul Zlota 37/4|
+18|3|Amanda|Kowalska|7583204947|amy.k@gmail.com|Rodlin, ul Maksi 6|
+19|1|Sandra|Smith|92793274|sandy.smith@wp.pl|Radlin, ul Okolna 11/2|
+20|4|Boguslaw|Linda|777333111|boguslaw@linda.pl|ul. Lotnikow 3a, Warszawa|
+21|5|Radoslaw|Pazura|666333111|radoslaw@pazura.pl|ul. 3 maja 3a, Lodz|
+22|1|Ewa|Smith|73820022|ewa.smith@mail.com|Stutgart|

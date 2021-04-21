@@ -27,6 +27,7 @@ void WyszukajPoNazwisku (const vector<DaneAdresata>& osoby, int liczbaOsob);
 void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob);
 int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby);
 void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob);
+void ZmienHasloUzytkownika (int UzytkownikID, vector<DaneUzytkownika>& users, int liczbaUzytkownikow);
 
 int main() {
     char znak;
@@ -140,7 +141,7 @@ int main() {
                     EdytujRekordWedlugID (adresaci,liczbaZnajomych);
                     break;
                 case '7':
-                    cout << "7. Zmiana hasla" << endl;
+                    ZmienHasloUzytkownika (TempUserID, users, liczbaUzytkownikow);
                     break;
                 case '9': {
                     cout<<"Wylogowano"<<endl;
@@ -230,7 +231,7 @@ int ZalogujUzytkownika (int liczbaUzytkownikow, const vector<DaneUzytkownika>& u
 
     for (int i=0; i<liczbaUzytkownikow; i++) {
         if (users[i].UserName==TempLogin) {
-                cout << "Znaleziono login w bazie." << endl;
+            cout << "Znaleziono login w bazie." << endl;
             for (int j=3; j>0; j--) {
                 cout << "Podaj haslo: ";
                 cin >> TempPassword;
@@ -243,8 +244,8 @@ int ZalogujUzytkownika (int liczbaUzytkownikow, const vector<DaneUzytkownika>& u
                     cout << "Haslo niepoprawne. Pozostalo prob: " << j-1 << endl;
                 }
             }
-        cout << "Logowanie nieudane. Podano 3 razy niepoprawne haslo." << endl;
-        return 0;
+            cout << "Logowanie nieudane. Podano 3 razy niepoprawne haslo." << endl;
+            return 0;
         }
     }
     cout << "Logowanie nieudane. Nie ma takiego uzytkownika w bazie." << endl;
@@ -525,6 +526,42 @@ void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob) {
         znajomi<<TempString<<endl;
     }
     znajomi.close();
+
+    system("pause");
+}
+
+void ZmienHasloUzytkownika (int UzytkownikID, vector<DaneUzytkownika>& users, int liczbaUzytkownikow) {
+    fstream uzytkownicy;
+    DaneUzytkownika USER;
+    string DaneDoZapisu="";
+    int TempUserID;
+
+    system("cls");
+    uzytkownicy.open("Uzytkownicy.txt.",ios::out|ios::trunc);
+    uzytkownicy.close();
+
+    cout<< "Zmiana hasla" << endl;
+
+
+    uzytkownicy.open("Uzytkownicy.txt.",ios::out|ios::app);
+
+    for (int i=0; i<liczbaUzytkownikow; i++) {
+        TempUserID=users[i].UserID;
+        if (TempUserID==UzytkownikID) {
+            cout<< "Podaj swoje nowe haslo:";
+            cin >> users[i].UserPassword;
+            cout <<endl;
+            cout <<"Haslo zostalo zmienione" << endl;
+        }
+
+        DaneDoZapisu=to_string(users[i].UserID);
+        DaneDoZapisu+="|";
+        DaneDoZapisu+=users[i].UserName+"|";
+        DaneDoZapisu+=users[i].UserPassword+"|";
+        uzytkownicy<<DaneDoZapisu<<endl;
+        DaneDoZapisu="";
+    }
+    uzytkownicy.close();
 
     system("pause");
 }

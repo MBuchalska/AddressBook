@@ -80,7 +80,7 @@ int main() {
 
         case '2': {
             cout << "2. Logowanie uzytkownika" << endl;
-            TempUserID=ZalogujUzytkownika(liczbaUzytkownikow, users);
+            TempUserID=ZalogujUzytkownika(liczbaUzytkownikow);
 
             znajomi.open("Adresaci.txt.",ios::in);
 
@@ -260,6 +260,11 @@ DaneAdresata KonwertujLinie (string linia) {
     pozycja=linia.find("|");
     TempString=linia.substr(0,pozycja);
     ADRESAT.IDAdresat=atoi(TempString.c_str());
+    linia.erase(0,pozycja+1);
+
+    pozycja=linia.find("|");
+    TempString=linia.substr(0,pozycja);
+    ADRESAT.OwnerID=atoi(TempString.c_str());
     linia.erase(0,pozycja+1);
 
     pozycja=linia.find("|");

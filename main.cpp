@@ -25,8 +25,8 @@ int DodajOsobe(int liczbaOsob, vector<DaneAdresata>& osoby, int ostatnieIDAdresa
 void WyszukajPoImieniu (const vector<DaneAdresata>& osoby, int liczbaOsob, int ZalogowanyUzytkownikID);
 void WyszukajPoNazwisku (const vector<DaneAdresata>& osoby, int liczbaOsob, int ZalogowanyUzytkownikID);
 void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob, int ZalogowanyUzytkownikID);
-int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby);
-void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob);
+int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby, int ZalogowanyUzytkownikID);
+void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob, int ZalogowanyUzytkownikID);
 void ZmienHasloUzytkownika (int UzytkownikID, vector<DaneUzytkownika>& users, int liczbaUzytkownikow);
 
 int main() {
@@ -131,14 +131,14 @@ int main() {
                     WyswietlWszystko (adresaci,liczbaZnajomych, TempUserID);
                     break;
                 case '5': {
-                    liczbaZnajomych=UsunOsobe(liczbaZnajomych, adresaci);
+                    liczbaZnajomych=UsunOsobe(liczbaZnajomych, adresaci, TempUserID);
                     int RozmiarWektora;
                     RozmiarWektora=adresaci.size();
                     if (adresaci[RozmiarWektora-1].IDAdresat<LastIDAdresat) LastIDAdresat=adresaci[RozmiarWektora-1].IDAdresat;
                 }
                 break;
                 case '6':
-                    EdytujRekordWedlugID (adresaci,liczbaZnajomych);
+                    EdytujRekordWedlugID (adresaci,liczbaZnajomych, TempUserID);
                     break;
                 case '7':
                     ZmienHasloUzytkownika (TempUserID, users, liczbaUzytkownikow);
@@ -389,7 +389,7 @@ void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob, int Za
     system("pause");
 }
 
-int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby) {
+int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby, int ZalogowanyUzytkownikID) {
     int wyszukajTo, WskaznikRekordu=0;
     char znak;
     fstream znajomi;
@@ -401,7 +401,7 @@ int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby) {
     cout << "Podaj ID rekordu, ktory chcesz usunac:" <<endl;
     cin >> wyszukajTo;
     for(int i=0; i<liczbaOsob; i++) {
-        if (osoby[i].IDAdresat==wyszukajTo) {
+        if ((osoby[i].OwnerID==ZalogowanyUzytkownikID)&&(osoby[i].IDAdresat==wyszukajTo)) {
             cout<<"ID: "<< osoby[i].IDAdresat<<endl;
             cout<<"Imie: "<< osoby[i].imie<<endl;
             cout<<"Nazwisko: "<< osoby[i].nazwisko<<endl;
@@ -427,6 +427,8 @@ int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby) {
         for(int i=0; i<liczbaOsob; i++) {
             TempString="";
             TempString=to_string(osoby[i].IDAdresat);
+            TempString+="|";
+            TempString+=to_string(osoby[i].OwnerID);
             TempString+="|"+osoby[i].imie+"|"+osoby[i].nazwisko+"|";
             TempString+=osoby[i].telefon+"|"+osoby[i].mail+"|"+osoby[i].adres+"|";
             znajomi<<TempString<<endl;
@@ -446,7 +448,7 @@ int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby) {
 
 }
 
-void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob) {
+void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob, int ZalogowanyUzytkownikID) {
     int wyszukajTo, WskaznikRekordu=0;
     char znak;
     string TempString="";

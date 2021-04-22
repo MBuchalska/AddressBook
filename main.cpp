@@ -137,7 +137,8 @@ int main() {
                     WyswietlWszystko (adresaci,RozmiarWektora, TempUserID);
                     break;
                 case '5': {
-                    liczbaZnajomych=UsunOsobe(liczbaZnajomych, adresaci, TempUserID);
+                    RozmiarWektora=adresaci.size();
+                    liczbaZnajomych=UsunOsobe(RozmiarWektora, adresaci, TempUserID);
                     RozmiarWektora=adresaci.size();
                     if (adresaci[RozmiarWektora-1].IDAdresat<LastIDAdresat) LastIDAdresat=adresaci[RozmiarWektora-1].IDAdresat;
                 }
@@ -396,10 +397,10 @@ void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob, int Za
 }
 
 int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby, int ZalogowanyUzytkownikID) {
-    int wyszukajTo, WskaznikRekordu=0;
+    int wyszukajTo, WskaznikRekordu=0, pozycja, TempID;
     char znak;
-    fstream znajomi;
-    string TempString="";
+    fstream znajomi, znajomi2;
+    string TempString="", linia;
 
     system("cls");
 
@@ -426,20 +427,22 @@ int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby, int ZalogowanyUzytko
         osoby.erase(osoby.begin()+WskaznikRekordu);
         liczbaOsob--;
 
-        znajomi.open("Adresaci.txt.",ios::out|ios::trunc);
-        znajomi.close();
+        znajomi.open("Adresaci.txt.",ios::in);
+        znajomi2.open("Adresaci_tymczasowy.txt.",ios::out|ios::app);
 
-        znajomi.open("Adresaci.txt.",ios::out|ios::app);
-        for(int i=0; i<liczbaOsob; i++) {
-            TempString="";
-            TempString=to_string(osoby[i].IDAdresat);
-            TempString+="|";
-            TempString+=to_string(osoby[i].OwnerID);
-            TempString+="|"+osoby[i].imie+"|"+osoby[i].nazwisko+"|";
-            TempString+=osoby[i].telefon+"|"+osoby[i].mail+"|"+osoby[i].adres+"|";
-            znajomi<<TempString<<endl;
+        cin.sync();
+        while (getline(znajomi,linia)) {
+            pozycja=linia.find("|");
+            TempString=linia.substr(0,pozycja);
+            TempID=atoi(TempString.c_str());
+
+            if (TempID!=wyszukajTo) znajomi2<<linia<<endl;
         }
         znajomi.close();
+        znajomi2.close();
+
+        remove("Adresaci.txt.");
+        rename("Adresaci_tymczasowy.txt.","Adresaci.txt.");
 
         cout << "Rekord zostal usuniety" << endl;
         system("pause");

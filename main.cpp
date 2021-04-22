@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <windows.h>
 #include <vector>
+#include <cstdio>
 
 using namespace std;
 
@@ -124,12 +125,15 @@ int main() {
                 }
                 break;
                 case '2':
+                    RozmiarWektora=adresaci.size();
                     WyszukajPoImieniu (adresaci,RozmiarWektora, TempUserID);
                     break;
                 case '3':
+                    RozmiarWektora=adresaci.size();
                     WyszukajPoNazwisku (adresaci,RozmiarWektora, TempUserID);
                     break;
                 case '4':
+                    RozmiarWektora=adresaci.size();
                     WyswietlWszystko (adresaci,RozmiarWektora, TempUserID);
                     break;
                 case '5': {
@@ -139,6 +143,7 @@ int main() {
                 }
                 break;
                 case '6':
+                    RozmiarWektora=adresaci.size();
                     EdytujRekordWedlugID (adresaci,RozmiarWektora, TempUserID);
                     break;
                 case '7':
@@ -377,15 +382,15 @@ void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob, int Za
     system("cls");
     cout << "Wyswietlam dane wszystkich znajomych:" << endl;
     for (int i=0; i<liczbaOsob; i++) {
-        if (osoby[i].OwnerID==ZalogowanyUzytkownikID){
-        cout<<"ID: "<< osoby[i].IDAdresat<<endl;
-        cout<<"Imie: "<< osoby[i].imie<<endl;
-        cout<<"Nazwisko: "<< osoby[i].nazwisko<<endl;
-        cout<<"Telefon: "<< osoby[i].telefon<<endl;
-        cout<<"Mail: " << osoby[i].mail<<endl;
-        cout<<"Adres: " << osoby[i].adres<<endl;
-        cout<<endl;
-    }
+        if (osoby[i].OwnerID==ZalogowanyUzytkownikID) {
+            cout<<"ID: "<< osoby[i].IDAdresat<<endl;
+            cout<<"Imie: "<< osoby[i].imie<<endl;
+            cout<<"Nazwisko: "<< osoby[i].nazwisko<<endl;
+            cout<<"Telefon: "<< osoby[i].telefon<<endl;
+            cout<<"Mail: " << osoby[i].mail<<endl;
+            cout<<"Adres: " << osoby[i].adres<<endl;
+            cout<<endl;
+        }
     }
     system("pause");
 }
@@ -531,26 +536,28 @@ void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob, int Zalo
     znajomi2.open("Adresaci_tymczasowy.txt.",ios::out|ios::app);
 
     cin.sync();
-    while (getline(znajomi,linia)){
+    while (getline(znajomi,linia)) {
 
-    pozycja=linia.find("|");
-    TempString=linia.substr(0,pozycja);
-    TempID=atoi(TempString.c_str());
+        pozycja=linia.find("|");
+        TempString=linia.substr(0,pozycja);
+        TempID=atoi(TempString.c_str());
 
-            if(TempID==wyszukajTo){
-        TempString="";
-        TempString=to_string(wyszukajTo);
-        TempString+="|";
-        TempString+=to_string(osoby[WskaznikRekordu].OwnerID);
-        TempString+="|"+osoby[WskaznikRekordu].imie+"|"+osoby[WskaznikRekordu].nazwisko+"|";
-        TempString+=osoby[WskaznikRekordu].telefon+"|"+osoby[WskaznikRekordu].mail+"|"+osoby[WskaznikRekordu].adres+"|";
-        znajomi2<<TempString<<endl;
-            }
-            else znajomi2<<linia<<endl;
+        if(TempID==wyszukajTo) {
+            TempString="";
+            TempString=to_string(wyszukajTo);
+            TempString+="|";
+            TempString+=to_string(osoby[WskaznikRekordu].OwnerID);
+            TempString+="|"+osoby[WskaznikRekordu].imie+"|"+osoby[WskaznikRekordu].nazwisko+"|";
+            TempString+=osoby[WskaznikRekordu].telefon+"|"+osoby[WskaznikRekordu].mail+"|"+osoby[WskaznikRekordu].adres+"|";
+            znajomi2<<TempString<<endl;
+        } else znajomi2<<linia<<endl;
     }
 
     znajomi.close();
     znajomi2.close();
+
+    remove("Adresaci.txt.");
+    rename("Adresaci_tymczasowy.txt.","Adresaci.txt.");
 
     system("pause");
 }

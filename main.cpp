@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <windows.h>
 #include <vector>
+#include <cstdio>
 
 using namespace std;
 
@@ -34,6 +35,7 @@ int main() {
     fstream uzytkownicy, znajomi;
     int liczbaUzytkownikow, TempUserID=0;
     int liczbaZnajomych=0, licznik=0, LastIDAdresat;
+    int RozmiarWektora;
     string linia;
     vector <DaneUzytkownika> users;
     vector <DaneAdresata> adresaci;
@@ -93,7 +95,7 @@ int main() {
             else {
                 while (getline(znajomi,linia)) {       // odczytuje kolejne linie dopoki getline nie zwtoci falsz
                     ADRESAT=KonwertujLinie(linia);
-                    adresaci.push_back(ADRESAT);
+                    if (ADRESAT.OwnerID==TempUserID)  adresaci.push_back(ADRESAT);
                     licznik++;
                 }
                 liczbaZnajomych=licznik;
@@ -119,26 +121,31 @@ int main() {
                 case '1': {
                     liczbaZnajomych=DodajOsobe(liczbaZnajomych, adresaci, LastIDAdresat, TempUserID);
                     LastIDAdresat++;
+                    RozmiarWektora=adresaci.size();
                 }
                 break;
                 case '2':
-                    WyszukajPoImieniu (adresaci,liczbaZnajomych, TempUserID);
+                    RozmiarWektora=adresaci.size();
+                    WyszukajPoImieniu (adresaci,RozmiarWektora, TempUserID);
                     break;
                 case '3':
-                    WyszukajPoNazwisku (adresaci,liczbaZnajomych, TempUserID);
+                    RozmiarWektora=adresaci.size();
+                    WyszukajPoNazwisku (adresaci,RozmiarWektora, TempUserID);
                     break;
                 case '4':
-                    WyswietlWszystko (adresaci,liczbaZnajomych, TempUserID);
+                    RozmiarWektora=adresaci.size();
+                    WyswietlWszystko (adresaci,RozmiarWektora, TempUserID);
                     break;
                 case '5': {
-                    liczbaZnajomych=UsunOsobe(liczbaZnajomych, adresaci, TempUserID);
-                    int RozmiarWektora;
+                    RozmiarWektora=adresaci.size();
+                    liczbaZnajomych=UsunOsobe(RozmiarWektora, adresaci, TempUserID);
                     RozmiarWektora=adresaci.size();
                     if (adresaci[RozmiarWektora-1].IDAdresat<LastIDAdresat) LastIDAdresat=adresaci[RozmiarWektora-1].IDAdresat;
                 }
                 break;
                 case '6':
-                    EdytujRekordWedlugID (adresaci,liczbaZnajomych, TempUserID);
+                    RozmiarWektora=adresaci.size();
+                    EdytujRekordWedlugID (adresaci,RozmiarWektora, TempUserID);
                     break;
                 case '7':
                     ZmienHasloUzytkownika (TempUserID, users, liczbaUzytkownikow);
@@ -376,24 +383,24 @@ void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob, int Za
     system("cls");
     cout << "Wyswietlam dane wszystkich znajomych:" << endl;
     for (int i=0; i<liczbaOsob; i++) {
-        if (osoby[i].OwnerID==ZalogowanyUzytkownikID){
-        cout<<"ID: "<< osoby[i].IDAdresat<<endl;
-        cout<<"Imie: "<< osoby[i].imie<<endl;
-        cout<<"Nazwisko: "<< osoby[i].nazwisko<<endl;
-        cout<<"Telefon: "<< osoby[i].telefon<<endl;
-        cout<<"Mail: " << osoby[i].mail<<endl;
-        cout<<"Adres: " << osoby[i].adres<<endl;
-        cout<<endl;
-    }
+        if (osoby[i].OwnerID==ZalogowanyUzytkownikID) {
+            cout<<"ID: "<< osoby[i].IDAdresat<<endl;
+            cout<<"Imie: "<< osoby[i].imie<<endl;
+            cout<<"Nazwisko: "<< osoby[i].nazwisko<<endl;
+            cout<<"Telefon: "<< osoby[i].telefon<<endl;
+            cout<<"Mail: " << osoby[i].mail<<endl;
+            cout<<"Adres: " << osoby[i].adres<<endl;
+            cout<<endl;
+        }
     }
     system("pause");
 }
 
 int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby, int ZalogowanyUzytkownikID) {
-    int wyszukajTo, WskaznikRekordu=0;
+    int wyszukajTo, WskaznikRekordu=0, pozycja, TempID;
     char znak;
-    fstream znajomi;
-    string TempString="";
+    fstream znajomi, znajomi2;
+    string TempString="", linia;
 
     system("cls");
 
@@ -420,20 +427,22 @@ int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby, int ZalogowanyUzytko
         osoby.erase(osoby.begin()+WskaznikRekordu);
         liczbaOsob--;
 
-        znajomi.open("Adresaci.txt.",ios::out|ios::trunc);
-        znajomi.close();
+        znajomi.open("Adresaci.txt.",ios::in);
+        znajomi2.open("Adresaci_tymczasowy.txt.",ios::out|ios::app);
 
-        znajomi.open("Adresaci.txt.",ios::out|ios::app);
-        for(int i=0; i<liczbaOsob; i++) {
-            TempString="";
-            TempString=to_string(osoby[i].IDAdresat);
-            TempString+="|";
-            TempString+=to_string(osoby[i].OwnerID);
-            TempString+="|"+osoby[i].imie+"|"+osoby[i].nazwisko+"|";
-            TempString+=osoby[i].telefon+"|"+osoby[i].mail+"|"+osoby[i].adres+"|";
-            znajomi<<TempString<<endl;
+        cin.sync();
+        while (getline(znajomi,linia)) {
+            pozycja=linia.find("|");
+            TempString=linia.substr(0,pozycja);
+            TempID=atoi(TempString.c_str());
+
+            if (TempID!=wyszukajTo) znajomi2<<linia<<endl;
         }
         znajomi.close();
+        znajomi2.close();
+
+        remove("Adresaci.txt.");
+        rename("Adresaci_tymczasowy.txt.","Adresaci.txt.");
 
         cout << "Rekord zostal usuniety" << endl;
         system("pause");
@@ -449,10 +458,10 @@ int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby, int ZalogowanyUzytko
 }
 
 void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob, int ZalogowanyUzytkownikID) {
-    int wyszukajTo, WskaznikRekordu=0;
+    int wyszukajTo, WskaznikRekordu=0, pozycja, TempID;
     char znak;
-    string TempString="";
-    fstream znajomi;
+    string TempString="", linia;
+    fstream znajomi, znajomi2;
     system("cls");
 
     cout << "Edycja rekordu" << endl;
@@ -525,20 +534,33 @@ void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob, int Zalo
     }
     break;
     }
-    znajomi.open("Adresaci.txt.",ios::out|ios::trunc);
-    znajomi.close();
 
-    znajomi.open("Adresaci.txt.",ios::out|ios::app);
-    for(int i=0; i<liczbaOsob; i++) {
-        TempString="";
-        TempString=to_string(osoby[i].IDAdresat);
-                    TempString+="|";
-            TempString+=to_string(osoby[i].OwnerID);
-        TempString+="|"+osoby[i].imie+"|"+osoby[i].nazwisko+"|";
-        TempString+=osoby[i].telefon+"|"+osoby[i].mail+"|"+osoby[i].adres+"|";
-        znajomi<<TempString<<endl;
+    znajomi.open("Adresaci.txt.",ios::in);
+    znajomi2.open("Adresaci_tymczasowy.txt.",ios::out|ios::app);
+
+    cin.sync();
+    while (getline(znajomi,linia)) {
+
+        pozycja=linia.find("|");
+        TempString=linia.substr(0,pozycja);
+        TempID=atoi(TempString.c_str());
+
+        if(TempID==wyszukajTo) {
+            TempString="";
+            TempString=to_string(wyszukajTo);
+            TempString+="|";
+            TempString+=to_string(osoby[WskaznikRekordu].OwnerID);
+            TempString+="|"+osoby[WskaznikRekordu].imie+"|"+osoby[WskaznikRekordu].nazwisko+"|";
+            TempString+=osoby[WskaznikRekordu].telefon+"|"+osoby[WskaznikRekordu].mail+"|"+osoby[WskaznikRekordu].adres+"|";
+            znajomi2<<TempString<<endl;
+        } else znajomi2<<linia<<endl;
     }
+
     znajomi.close();
+    znajomi2.close();
+
+    remove("Adresaci.txt.");
+    rename("Adresaci_tymczasowy.txt.","Adresaci.txt.");
 
     system("pause");
 }

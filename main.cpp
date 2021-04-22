@@ -139,7 +139,7 @@ int main() {
                 }
                 break;
                 case '6':
-                    EdytujRekordWedlugID (adresaci,liczbaZnajomych, TempUserID);
+                    EdytujRekordWedlugID (adresaci,RozmiarWektora, TempUserID);
                     break;
                 case '7':
                     ZmienHasloUzytkownika (TempUserID, users, liczbaUzytkownikow);
@@ -450,10 +450,10 @@ int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby, int ZalogowanyUzytko
 }
 
 void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob, int ZalogowanyUzytkownikID) {
-    int wyszukajTo, WskaznikRekordu=0;
+    int wyszukajTo, WskaznikRekordu=0, pozycja, TempID;
     char znak;
-    string TempString="";
-    fstream znajomi;
+    string TempString="", linia;
+    fstream znajomi, znajomi2;
     system("cls");
 
     cout << "Edycja rekordu" << endl;
@@ -526,20 +526,31 @@ void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob, int Zalo
     }
     break;
     }
-    znajomi.open("Adresaci.txt.",ios::out|ios::trunc);
-    znajomi.close();
 
-    znajomi.open("Adresaci.txt.",ios::out|ios::app);
-    for(int i=0; i<liczbaOsob; i++) {
+    znajomi.open("Adresaci.txt.",ios::in);
+    znajomi2.open("Adresaci_tymczasowy.txt.",ios::out|ios::app);
+
+    cin.sync();
+    while (getline(znajomi,linia)){
+
+    pozycja=linia.find("|");
+    TempString=linia.substr(0,pozycja);
+    TempID=atoi(TempString.c_str());
+
+            if(TempID==wyszukajTo){
         TempString="";
-        TempString=to_string(osoby[i].IDAdresat);
-                    TempString+="|";
-            TempString+=to_string(osoby[i].OwnerID);
-        TempString+="|"+osoby[i].imie+"|"+osoby[i].nazwisko+"|";
-        TempString+=osoby[i].telefon+"|"+osoby[i].mail+"|"+osoby[i].adres+"|";
-        znajomi<<TempString<<endl;
+        TempString=to_string(wyszukajTo);
+        TempString+="|";
+        TempString+=to_string(osoby[WskaznikRekordu].OwnerID);
+        TempString+="|"+osoby[WskaznikRekordu].imie+"|"+osoby[WskaznikRekordu].nazwisko+"|";
+        TempString+=osoby[WskaznikRekordu].telefon+"|"+osoby[WskaznikRekordu].mail+"|"+osoby[WskaznikRekordu].adres+"|";
+        znajomi2<<TempString<<endl;
+            }
+            else znajomi2<<linia<<endl;
     }
+
     znajomi.close();
+    znajomi2.close();
 
     system("pause");
 }

@@ -34,6 +34,7 @@ int main() {
     fstream uzytkownicy, znajomi;
     int liczbaUzytkownikow, TempUserID=0;
     int liczbaZnajomych=0, licznik=0, LastIDAdresat;
+    int RozmiarWektora;
     string linia;
     vector <DaneUzytkownika> users;
     vector <DaneAdresata> adresaci;
@@ -93,7 +94,7 @@ int main() {
             else {
                 while (getline(znajomi,linia)) {       // odczytuje kolejne linie dopoki getline nie zwtoci falsz
                     ADRESAT=KonwertujLinie(linia);
-                    adresaci.push_back(ADRESAT);
+                    if (ADRESAT.OwnerID==TempUserID)  adresaci.push_back(ADRESAT);
                     licznik++;
                 }
                 liczbaZnajomych=licznik;
@@ -119,20 +120,20 @@ int main() {
                 case '1': {
                     liczbaZnajomych=DodajOsobe(liczbaZnajomych, adresaci, LastIDAdresat, TempUserID);
                     LastIDAdresat++;
+                    RozmiarWektora=adresaci.size();
                 }
                 break;
                 case '2':
-                    WyszukajPoImieniu (adresaci,liczbaZnajomych, TempUserID);
+                    WyszukajPoImieniu (adresaci,RozmiarWektora, TempUserID);
                     break;
                 case '3':
-                    WyszukajPoNazwisku (adresaci,liczbaZnajomych, TempUserID);
+                    WyszukajPoNazwisku (adresaci,RozmiarWektora, TempUserID);
                     break;
                 case '4':
-                    WyswietlWszystko (adresaci,liczbaZnajomych, TempUserID);
+                    WyswietlWszystko (adresaci,RozmiarWektora, TempUserID);
                     break;
                 case '5': {
                     liczbaZnajomych=UsunOsobe(liczbaZnajomych, adresaci, TempUserID);
-                    int RozmiarWektora;
                     RozmiarWektora=adresaci.size();
                     if (adresaci[RozmiarWektora-1].IDAdresat<LastIDAdresat) LastIDAdresat=adresaci[RozmiarWektora-1].IDAdresat;
                 }

@@ -19,4 +19,5 @@
 19|1|Sandra|Smith|92793274|sandy.smith@wp.pl|Radlin, ul Okolna 11/2|
 20|4|Boguslaw|Linda|777333111|boguslaw@linda.pl|ul. Lotnikow 3a, Warszawa|
 21|5|Radoslaw|Pazura|666333111|radoslaw@pazura.pl|ul. 3 maja 3a, Lodz|
-22|1|Ewa|Smith|73820022|ewa.smith@mail.com|Stutgart|
+22|1|Kasia|Smith|73820022|ewa.smith@mail.com|Stutgart|
+

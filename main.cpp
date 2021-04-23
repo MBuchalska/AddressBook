@@ -23,11 +23,11 @@ int RejestrujUzytkownika (int liczbaUzytkownikow, vector<DaneUzytkownika>& users
 int ZalogujUzytkownika (int liczbaUzytkownikow, const vector<DaneUzytkownika>& users);
 DaneAdresata KonwertujLinie (string linia);
 int DodajOsobe(int liczbaOsob, vector<DaneAdresata>& osoby, int ostatnieIDAdresat, int ZalogowanyUzytkownikID);
-void WyszukajPoImieniu (const vector<DaneAdresata>& osoby, int liczbaOsob, int ZalogowanyUzytkownikID);
-void WyszukajPoNazwisku (const vector<DaneAdresata>& osoby, int liczbaOsob, int ZalogowanyUzytkownikID);
-void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob, int ZalogowanyUzytkownikID);
+void WyszukajPoImieniu (const vector<DaneAdresata>& osoby, int liczbaOsob);
+void WyszukajPoNazwisku (const vector<DaneAdresata>& osoby, int liczbaOsob);
+void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob);
 int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby, int ZalogowanyUzytkownikID);
-void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob, int ZalogowanyUzytkownikID);
+void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob);
 void ZmienHasloUzytkownika (int UzytkownikID, vector<DaneUzytkownika>& users, int liczbaUzytkownikow);
 
 int main() {
@@ -66,15 +66,14 @@ int main() {
             while (getline(uzytkownicy,linia)) {       // odczytuje kolejne linie dopoki getline nie zwtoci falsz
                 USER= PrzepiszDoWektora(linia);
                 users.push_back(USER);
-                licznik++;
             }
-            liczbaUzytkownikow=licznik;
-            licznik=0;
         }
+
         uzytkownicy.close();
 
         switch (znak) {
         case '1': {
+            liczbaUzytkownikow=users.size();
             cout << "1. Rejestracja nowego uzytkownika" << endl;
             liczbaUzytkownikow=RejestrujUzytkownika(liczbaUzytkownikow, users);
         }
@@ -82,6 +81,7 @@ int main() {
 
         case '2': {
             cout << "2. Logowanie uzytkownika" << endl;
+            liczbaUzytkownikow=users.size();
             TempUserID=ZalogujUzytkownika(liczbaUzytkownikow, users);
 
             znajomi.open("Adresaci.txt.",ios::in);
@@ -95,18 +95,19 @@ int main() {
             else {
                 while (getline(znajomi,linia)) {       // odczytuje kolejne linie dopoki getline nie zwtoci falsz
                     ADRESAT=KonwertujLinie(linia);
-                    if (ADRESAT.OwnerID==TempUserID)  adresaci.push_back(ADRESAT);
                     licznik++;
+                    if (ADRESAT.OwnerID==TempUserID)  adresaci.push_back(ADRESAT);
                 }
                 liczbaZnajomych=licznik;
                 LastIDAdresat=ADRESAT.IDAdresat;
+                licznik=0;
             }
             znajomi.close();
 
             while (TempUserID!=0) {
                 cout << endl;
                 cout << "Wybierz co chcesz zrobic" << endl;
-                cout << "1. Dodaj osobe" << endl;
+                cout << "1. Dodaj adresata" << endl;
                 cout << "2. Wyszukaj po imieniu" << endl;
                 cout << "3. Wyszukaj po nazwisku" << endl;
                 cout << "4. Wyswietl wszystkich adresatow" << endl;
@@ -124,18 +125,21 @@ int main() {
                     RozmiarWektora=adresaci.size();
                 }
                 break;
-                case '2':
+                case '2': {
                     RozmiarWektora=adresaci.size();
-                    WyszukajPoImieniu (adresaci,RozmiarWektora, TempUserID);
-                    break;
-                case '3':
+                    WyszukajPoImieniu (adresaci,RozmiarWektora);
+                }
+                break;
+                case '3': {
                     RozmiarWektora=adresaci.size();
-                    WyszukajPoNazwisku (adresaci,RozmiarWektora, TempUserID);
-                    break;
-                case '4':
+                    WyszukajPoNazwisku (adresaci,RozmiarWektora);
+                }
+                break;
+                case '4': {
                     RozmiarWektora=adresaci.size();
-                    WyswietlWszystko (adresaci,RozmiarWektora, TempUserID);
-                    break;
+                    WyswietlWszystko (adresaci,RozmiarWektora);
+                }
+                break;
                 case '5': {
                     RozmiarWektora=adresaci.size();
                     liczbaZnajomych=UsunOsobe(RozmiarWektora, adresaci, TempUserID);
@@ -143,16 +147,21 @@ int main() {
                     if (adresaci[RozmiarWektora-1].IDAdresat<LastIDAdresat) LastIDAdresat=adresaci[RozmiarWektora-1].IDAdresat;
                 }
                 break;
-                case '6':
+                case '6': {
                     RozmiarWektora=adresaci.size();
-                    EdytujRekordWedlugID (adresaci,RozmiarWektora, TempUserID);
-                    break;
-                case '7':
+                    EdytujRekordWedlugID (adresaci,RozmiarWektora);
+                }
+                break;
+                case '7': {
+                    liczbaUzytkownikow=users.size();
                     ZmienHasloUzytkownika (TempUserID, users, liczbaUzytkownikow);
-                    break;
+                }
+                break;
                 case '9': {
                     cout<<"Wylogowano"<<endl;
                     TempUserID=0;
+                    adresaci.clear();
+                    users.clear();
                 }
                 break;
                 }
@@ -303,7 +312,7 @@ int DodajOsobe(int liczbaOsob, vector<DaneAdresata>& osoby, int ostatnieIDAdresa
     string DaneDoZapisu="";
 
     system("cls");
-    cout << "Dodawanie osoby" << endl;
+    cout << "Dodawanie nowego adresata" << endl;
     cout << "Podaj dane osoby" << endl;
 
     if (liczbaOsob>ostatnieIDAdresat) ADRESAT.IDAdresat=liczbaOsob+1;
@@ -340,14 +349,14 @@ int DodajOsobe(int liczbaOsob, vector<DaneAdresata>& osoby, int ostatnieIDAdresa
     return liczbaOsob+1;
 }
 
-void WyszukajPoImieniu (const vector<DaneAdresata>& osoby, int liczbaOsob, int ZalogowanyUzytkownikID) {
+void WyszukajPoImieniu (const vector<DaneAdresata>& osoby, int liczbaOsob) {
     system("cls");
     string wyszukajTo;
     cout << "Wyszukiwanie po imieniu" << endl;
     cout << "Podaj imie znajomego" <<endl;
     cin >> wyszukajTo;
     for(int i=0; i<liczbaOsob; i++) {
-        if ((osoby[i].OwnerID==ZalogowanyUzytkownikID)&&(osoby[i].imie==wyszukajTo)) {
+        if (osoby[i].imie==wyszukajTo) {
             cout<<"ID: "<< osoby[i].IDAdresat<<endl;
             cout<<"Imie: "<< osoby[i].imie<<endl;
             cout<<"Nazwisko: "<< osoby[i].nazwisko<<endl;
@@ -359,14 +368,14 @@ void WyszukajPoImieniu (const vector<DaneAdresata>& osoby, int liczbaOsob, int Z
     }
     system("pause");
 }
-void WyszukajPoNazwisku (const vector<DaneAdresata>& osoby, int liczbaOsob, int ZalogowanyUzytkownikID) {
+void WyszukajPoNazwisku (const vector<DaneAdresata>& osoby, int liczbaOsob) {
     system("cls");
     string wyszukajTo;
     cout << "Wyszukiwanie po nazwisku" << endl;
     cout << "Podaj nazwisko znajomego" <<endl;
     cin >> wyszukajTo;
     for(int i=0; i<liczbaOsob; i++) {
-        if ((osoby[i].OwnerID==ZalogowanyUzytkownikID)&&(osoby[i].nazwisko==wyszukajTo)) {
+        if (osoby[i].nazwisko==wyszukajTo) {
             cout<<"ID: "<< osoby[i].IDAdresat<<endl;
             cout<<"Imie: "<< osoby[i].imie<<endl;
             cout<<"Nazwisko: "<< osoby[i].nazwisko<<endl;
@@ -379,19 +388,17 @@ void WyszukajPoNazwisku (const vector<DaneAdresata>& osoby, int liczbaOsob, int 
     system("pause");
 }
 
-void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob, int ZalogowanyUzytkownikID) {
+void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob) {
     system("cls");
     cout << "Wyswietlam dane wszystkich znajomych:" << endl;
     for (int i=0; i<liczbaOsob; i++) {
-        if (osoby[i].OwnerID==ZalogowanyUzytkownikID) {
-            cout<<"ID: "<< osoby[i].IDAdresat<<endl;
-            cout<<"Imie: "<< osoby[i].imie<<endl;
-            cout<<"Nazwisko: "<< osoby[i].nazwisko<<endl;
-            cout<<"Telefon: "<< osoby[i].telefon<<endl;
-            cout<<"Mail: " << osoby[i].mail<<endl;
-            cout<<"Adres: " << osoby[i].adres<<endl;
-            cout<<endl;
-        }
+        cout<<"ID: "<< osoby[i].IDAdresat<<endl;
+        cout<<"Imie: "<< osoby[i].imie<<endl;
+        cout<<"Nazwisko: "<< osoby[i].nazwisko<<endl;
+        cout<<"Telefon: "<< osoby[i].telefon<<endl;
+        cout<<"Mail: " << osoby[i].mail<<endl;
+        cout<<"Adres: " << osoby[i].adres<<endl;
+        cout<<endl;
     }
     system("pause");
 }
@@ -457,7 +464,7 @@ int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby, int ZalogowanyUzytko
 
 }
 
-void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob, int ZalogowanyUzytkownikID) {
+void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob) {
     int wyszukajTo, WskaznikRekordu=0, pozycja, TempID;
     char znak;
     string TempString="", linia;
@@ -468,7 +475,7 @@ void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob, int Zalo
     cout << "Podaj ID rekordu, ktory chcesz edytowac:" <<endl;
     cin >> wyszukajTo;
     for(int i=0; i<liczbaOsob; i++) {
-        if ((osoby[i].OwnerID==ZalogowanyUzytkownikID)&&(osoby[i].IDAdresat==wyszukajTo)) {
+        if (osoby[i].IDAdresat==wyszukajTo) {
             cout<<"ID: "<< osoby[i].IDAdresat<<endl;
             cout<<"Imie: "<< osoby[i].imie<<endl;
             cout<<"Nazwisko: "<< osoby[i].nazwisko<<endl;
@@ -581,6 +588,7 @@ void ZmienHasloUzytkownika (int UzytkownikID, vector<DaneUzytkownika>& users, in
     uzytkownicy.open("Uzytkownicy.txt.",ios::out|ios::app);
 
     for (int i=0; i<liczbaUzytkownikow; i++) {
+        DaneDoZapisu="";
         TempUserID=users[i].UserID;
         if (TempUserID==UzytkownikID) {
             cout<< "Podaj swoje nowe haslo:";
@@ -594,7 +602,6 @@ void ZmienHasloUzytkownika (int UzytkownikID, vector<DaneUzytkownika>& users, in
         DaneDoZapisu+=users[i].UserName+"|";
         DaneDoZapisu+=users[i].UserPassword+"|";
         uzytkownicy<<DaneDoZapisu<<endl;
-        DaneDoZapisu="";
     }
     uzytkownicy.close();
 

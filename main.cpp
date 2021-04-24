@@ -26,7 +26,7 @@ int DodajOsobe(int liczbaOsob, vector<DaneAdresata>& osoby, int ostatnieIDAdresa
 void WyszukajPoImieniu (const vector<DaneAdresata>& osoby, int liczbaOsob);
 void WyszukajPoNazwisku (const vector<DaneAdresata>& osoby, int liczbaOsob);
 void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob);
-int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby, int ZalogowanyUzytkownikID);
+int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby);
 void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob);
 void ZmienHasloUzytkownika (int UzytkownikID, vector<DaneUzytkownika>& users, int liczbaUzytkownikow);
 
@@ -142,7 +142,7 @@ int main() {
                 break;
                 case '5': {
                     RozmiarWektora=adresaci.size();
-                    liczbaZnajomych=UsunOsobe(RozmiarWektora, adresaci, TempUserID);
+                    liczbaZnajomych=UsunOsobe(RozmiarWektora, adresaci);
                     RozmiarWektora=adresaci.size();
                     if (adresaci[RozmiarWektora-1].IDAdresat<LastIDAdresat) LastIDAdresat=adresaci[RozmiarWektora-1].IDAdresat;
                 }
@@ -403,7 +403,7 @@ void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob) {
     system("pause");
 }
 
-int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby, int ZalogowanyUzytkownikID) {
+int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby) {
     int wyszukajTo, WskaznikRekordu=0, pozycja, TempID;
     char znak;
     fstream znajomi, znajomi2;
@@ -415,7 +415,7 @@ int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby, int ZalogowanyUzytko
     cout << "Podaj ID rekordu, ktory chcesz usunac:" <<endl;
     cin >> wyszukajTo;
     for(int i=0; i<liczbaOsob; i++) {
-        if ((osoby[i].OwnerID==ZalogowanyUzytkownikID)&&(osoby[i].IDAdresat==wyszukajTo)) {
+        if (osoby[i].IDAdresat==wyszukajTo) {
             cout<<"ID: "<< osoby[i].IDAdresat<<endl;
             cout<<"Imie: "<< osoby[i].imie<<endl;
             cout<<"Nazwisko: "<< osoby[i].nazwisko<<endl;

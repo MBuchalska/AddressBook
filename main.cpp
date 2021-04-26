@@ -34,7 +34,7 @@ int main() {
     char znak;
     fstream uzytkownicy, znajomi;
     int liczbaUzytkownikow, TempUserID=0;
-    int liczbaZnajomych=0, licznik=0, LastIDAdresat;
+    int liczbaZnajomych=0, licznik=0, LastIDAdresat=0;
     int RozmiarWektora;
     string linia;
     vector <DaneUzytkownika> users;
@@ -43,6 +43,23 @@ int main() {
     DaneAdresata ADRESAT;           // tymczasowa zmienna na pojedynczego adresata
 
     cout << "Witaj w swojej ksiazce adresowej" << endl;
+
+    uzytkownicy.open("Uzytkownicy.txt.",ios::in);
+
+    if (uzytkownicy.good()==false) {                    // sprawdzamy czy plik z danymi istnieje
+        liczbaUzytkownikow=0;
+        cout <<"Nie ma jeszcze zadnych zarejestrowanych uzytnowniow. Zarejstruj sie." << endl;
+        system("pause");
+    }
+
+    else {
+        while (getline(uzytkownicy,linia)) {       // odczytuje kolejne linie dopoki getline nie zwtoci falsz
+            USER= PrzepiszDoWektora(linia);
+            users.push_back(USER);
+        }
+    }
+
+    uzytkownicy.close();
 
     while (true) {
         cout<< endl;
@@ -53,23 +70,6 @@ int main() {
         cin >> znak;
 
         system("cls");
-
-        uzytkownicy.open("Uzytkownicy.txt.",ios::in);
-
-        if (uzytkownicy.good()==false) {                    // sprawdzamy czy plik z danymi istnieje
-            liczbaUzytkownikow=0;
-            cout <<"Nie ma jeszcze zadnych zarejestrowanych uzytnowniow. Zarejstruj sie." << endl;
-            system("pause");
-        }
-
-        else {
-            while (getline(uzytkownicy,linia)) {       // odczytuje kolejne linie dopoki getline nie zwtoci falsz
-                USER= PrzepiszDoWektora(linia);
-                users.push_back(USER);
-            }
-        }
-
-        uzytkownicy.close();
 
         switch (znak) {
         case '1': {
@@ -161,7 +161,6 @@ int main() {
                     cout<<"Wylogowano"<<endl;
                     TempUserID=0;
                     adresaci.clear();
-                    users.clear();
                 }
                 break;
                 }
@@ -232,7 +231,7 @@ int RejestrujUzytkownika (int liczbaUzytkownikow, vector<DaneUzytkownika>& users
     cout<<"Dane uzytkownika zapisane." << endl;
     system("pause");
 
-    return liczbaUzytkownikow+1;
+    return USER.UserID;
 }
 
 int ZalogujUzytkownika (int liczbaUzytkownikow, const vector<DaneUzytkownika>& users) {

@@ -5,22 +5,17 @@
 #include <windows.h>
 #include <vector>
 #include <cstdio>
+#include "User.h"
 
 using namespace std;
 
-struct DaneUzytkownika {
-    int UserID;
-    string UserName, UserPassword;
-};
 
 struct DaneAdresata {
     int IDAdresat, OwnerID;
     string imie, nazwisko, telefon, mail, adres;
 };
 
-DaneUzytkownika PrzepiszDoWektora (string linia);
-int RejestrujUzytkownika (int liczbaUzytkownikow, vector<DaneUzytkownika>& users);
-int ZalogujUzytkownika (int liczbaUzytkownikow, const vector<DaneUzytkownika>& users);
+UserData PrzepiszDoWektora (string linia);
 DaneAdresata KonwertujLinie (string linia);
 int DodajOsobe(int liczbaOsob, vector<DaneAdresata>& osoby, int ostatnieIDAdresat, int ZalogowanyUzytkownikID);
 void WyszukajPoImieniu (const vector<DaneAdresata>& osoby, int liczbaOsob);
@@ -28,7 +23,7 @@ void WyszukajPoNazwisku (const vector<DaneAdresata>& osoby, int liczbaOsob);
 void WyswietlWszystko (const vector<DaneAdresata>& osoby, int liczbaOsob);
 int UsunOsobe (int liczbaOsob, vector<DaneAdresata>& osoby);
 void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob);
-void ZmienHasloUzytkownika (int UzytkownikID, vector<DaneUzytkownika>& users, int liczbaUzytkownikow);
+void ZmienHasloUzytkownika (int UzytkownikID, vector<UserData>& users, int liczbaUzytkownikow);
 
 int main() {
     char znak;
@@ -37,9 +32,9 @@ int main() {
     int liczbaZnajomych=0, licznik=0, LastIDAdresat=0;
     int RozmiarWektora;
     string linia;
-    vector <DaneUzytkownika> users;
+    vector <UserData> users;
     vector <DaneAdresata> adresaci;
-    DaneUzytkownika USER;           // zmienna na pojedynczego uzytkownika
+    UserData USER;           // zmienna na pojedynczego uzytkownika
     DaneAdresata ADRESAT;           // tymczasowa zmienna na pojedynczego adresata
 
     cout << "Witaj w swojej ksiazce adresowej" << endl;
@@ -75,14 +70,14 @@ int main() {
         case '1': {
             liczbaUzytkownikow=users.size();
             cout << "1. Rejestracja nowego uzytkownika" << endl;
-            liczbaUzytkownikow=RejestrujUzytkownika(liczbaUzytkownikow, users);
+            liczbaUzytkownikow=USER.UserRegister(liczbaUzytkownikow,users);
         }
         break;
 
         case '2': {
             cout << "2. Logowanie uzytkownika" << endl;
             liczbaUzytkownikow=users.size();
-            TempUserID=ZalogujUzytkownika(liczbaUzytkownikow, users);
+            TempUserID=USER.LoginUser(liczbaUzytkownikow, users);
 
             znajomi.open("Adresaci.txt.",ios::in);
 
@@ -179,8 +174,8 @@ int main() {
     return 0;
 }
 
-DaneUzytkownika PrzepiszDoWektora (string linia) {
-    DaneUzytkownika User;
+UserData PrzepiszDoWektora (string linia) {
+    UserData User;
     int pozycja;
     string TempString="";
 
@@ -198,73 +193,6 @@ DaneUzytkownika PrzepiszDoWektora (string linia) {
     linia.erase(0,pozycja+1);
 
     return User;
-}
-
-int RejestrujUzytkownika (int liczbaUzytkownikow, vector<DaneUzytkownika>& users) {
-    fstream uzytkownicy;
-    DaneUzytkownika USER;
-    string DaneDoZapisu="";
-
-    system("cls");
-    cout << "Rejestracja nowego uzytkownika" << endl;
-    cout << "Podaj dane" << endl;
-
-    USER.UserID=liczbaUzytkownikow+1;
-    DaneDoZapisu=to_string(USER.UserID);
-    DaneDoZapisu+="|";
-
-    cout << "Podaj nazwe uzytkownika: ";
-    cin >> USER.UserName;
-    DaneDoZapisu+=USER.UserName+"|";
-
-    cout << "Podaj haslo do konta: ";
-    cin >> USER.UserPassword;
-    DaneDoZapisu+=USER.UserPassword+"|";
-
-    users.push_back(USER);
-
-    uzytkownicy.open("Uzytkownicy.txt.",ios::out|ios::app);
-    uzytkownicy<<DaneDoZapisu<<endl;
-    uzytkownicy.close();
-
-    cout<<endl;
-    cout<<"Dane uzytkownika zapisane." << endl;
-    system("pause");
-
-    return USER.UserID;
-}
-
-int ZalogujUzytkownika (int liczbaUzytkownikow, const vector<DaneUzytkownika>& users) {
-    string TempLogin="", TempPassword="";
-    DaneUzytkownika USER;
-
-    system("cls");
-    cout << "Logowanie" << endl;
-    cout << "Podaj nazwe uzytkownika: " ;
-    cin >> TempLogin;
-    cout <<endl;
-
-    for (int i=0; i<liczbaUzytkownikow; i++) {
-        if (users[i].UserName==TempLogin) {
-            cout << "Znaleziono login w bazie." << endl;
-            for (int j=3; j>0; j--) {
-                cout << "Podaj haslo: ";
-                cin >> TempPassword;
-                cout<<endl;
-                if (users[i].UserPassword==TempPassword) {
-                    cout << "Logowanie poprawne" <<endl;
-                    cout << "Witaj " << users[i].UserName << endl;
-                    return users[i].UserID;
-                } else {
-                    cout << "Haslo niepoprawne. Pozostalo prob: " << j-1 << endl;
-                }
-            }
-            cout << "Logowanie nieudane. Podano 3 razy niepoprawne haslo." << endl;
-            return 0;
-        }
-    }
-    cout << "Logowanie nieudane. Nie ma takiego uzytkownika w bazie." << endl;
-    return 0;
 }
 
 DaneAdresata KonwertujLinie (string linia) {
@@ -571,9 +499,9 @@ void EdytujRekordWedlugID (vector<DaneAdresata>& osoby, int liczbaOsob) {
     system("pause");
 }
 
-void ZmienHasloUzytkownika (int UzytkownikID, vector<DaneUzytkownika>& users, int liczbaUzytkownikow) {
+void ZmienHasloUzytkownika (int UzytkownikID, vector<UserData>& users, int liczbaUzytkownikow) {
     fstream uzytkownicy;
-    DaneUzytkownika USER;
+    UserData USER;
     string DaneDoZapisu="";
     int TempUserID;
 
